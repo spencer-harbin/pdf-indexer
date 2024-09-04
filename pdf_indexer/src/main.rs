@@ -1,19 +1,29 @@
-use std::fs::File;
-use std::io::BufWriter;
-use pdf_extract::extract_text;
+use std::process::{Command, Stdio}; 
+use std::io::{self, BufReader, Read}; 
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let pdf_path = "example/path/for/now.pdf";
+fn main() -> io::Result<()> {
+    let pdf_path = "/Users/spencer/Documents/email_papers_script/sample_pdfs/test.pdf"; 
 
-    let text = extract_text(pdf_path)?;
+    let mut child = Command::new("python")
+        .arg("/Users/spencer/Documents/pdf_index/pdf_indexer/python/extract_pdf_text.py")
+        .arg(pdf_path)
+        .stdout(Stdio::piped())
+        .spawn()
+        .expect("Failed to execute Python script");
 
-    println!("Extracted text:\n{}", text);
+    // read text extracted from py script's stdout 
+    let stdout = child.stdout.take().expect("Failed to capture stdout"); 
+    let mut reader = BufReader::new(stdout); 
+    let mut extracted_text = String::new(); 
+    reader.read_to_string(&mut extracted_text)?; 
 
-    // save extracted text to txt file
-    let output_path = "output.txt";
-    let output_file = File::create(output_path)?;
-    let mut writer = BufWriter::new(output_file);
-    std::io::Write::write_all(&mut writer, text.as_bytes())?;
+    // make sure py process finishes 
+    child.wait()?; 
+
+    // extract above logic into its own function (and return the stdout/extracted_text)
+
+    // process rest of stuff here 
+    println!("Extracted text:\n{}", extracted_text); 
 
     Ok(())
 }
