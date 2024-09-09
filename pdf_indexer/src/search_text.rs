@@ -3,7 +3,7 @@ pub struct Search {
 }
 
 impl Search {
-    pub fn search() {
+    pub fn search(text: &str) {
         
     }
 }
