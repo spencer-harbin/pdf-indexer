@@ -1,4 +1,5 @@
 mod extract_pdf_text;
+mod search_text;
 
 use std::io; 
 
