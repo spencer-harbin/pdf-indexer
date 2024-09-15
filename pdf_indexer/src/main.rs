@@ -4,6 +4,7 @@ mod index_text;
 
 use std::io;
 use std::io::*;
+use std::env; 
 
 use index_text::InvIndex; 
 
@@ -11,6 +12,8 @@ fn main() -> io::Result<()> {
     let mut index = InvIndex::new(); 
 
     // take in user input here to get the actual path
+    let args: Vec<String> = env::args().collect(); 
+    println!("{:?}", args); 
 
     let pdf_path = "/Users/spencer/Documents/email_papers_script/sample_pdfs/test.pdf"; 
     let python_script_path = "/Users/spencer/Documents/pdf_index/pdf_indexer/python/extract_pdf_text.py"; 
